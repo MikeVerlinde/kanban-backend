@@ -1,4 +1,3 @@
-// src/prisma/prisma.service.ts
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { PrismaClient } from '../generated/prisma/client.js';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
@@ -9,10 +8,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   constructor(){
     super({
       adapter: new PrismaMariaDb({
-        host: 'localhost',
-        user: 'kanban_user',
-        password: 'kanban_password',
-        database: 'kanban',
+        host: process.env.DATABASE_HOST,
+        user: process.env.DATABASE_USER,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE_NAME,
       })
     })
   }
