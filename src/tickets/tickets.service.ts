@@ -43,7 +43,16 @@ export class TicketsService {
     public async get (
         filter: {}
     ): Promise<Ticket[]> {
-        return await this.ticketsRepository.get(filter)
+        return await this.ticketsRepository.get({
+            ...filter,
+            include: {
+                assignee: {
+                    select: {
+                        username: true
+                    }
+                }
+            }
+        })
     }
 
     public async update (
