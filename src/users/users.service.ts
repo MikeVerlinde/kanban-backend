@@ -20,4 +20,10 @@ export class UsersService {
     ): Promise<User | null> {
         return await this.usersRepository.getByUsername(username)
     }
+
+    public async get (
+        filter: {}
+    ): Promise<User[]> {
+        return await this.usersRepository.get(filter)
+    }
 }
