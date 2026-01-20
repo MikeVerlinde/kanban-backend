@@ -3,12 +3,14 @@ import { TicketsRepository } from "./tickets.repository.js";
 import { CreateTicketDto } from "./dto/createTicket.dto.js";
 import { Ticket } from "../generated/prisma/client.js";
 import { UpdateTicketDto } from "./dto/updateTicket.dto.js";
+import { EventsGateway } from "../events/events.gateway.js";
 
 @Injectable()
 export class TicketsService {
 
     constructor(
-        private ticketsRepository: TicketsRepository
+        private ticketsRepository: TicketsRepository,
+        private eventsGateway: EventsGateway,
     ){}
 
     public async create (
@@ -35,9 +37,22 @@ export class TicketsService {
             }
         }
 
-        return await this.ticketsRepository.create({
-            data
+        // Create ticket
+        const ticket: Ticket = await this.ticketsRepository.create({
+            data,
+            include: {
+                assignee: {
+                    select: {
+                        username: true
+                    }
+                }
+            }
         })
+
+        // Emit event
+        this.eventsGateway.emitTicketCreated(ticket)
+
+        return ticket
     }
 
     public async get (
@@ -59,7 +74,9 @@ export class TicketsService {
         id: string,
         updateTicketDto: UpdateTicketDto
     ): Promise<Ticket> {
-        return await this.ticketsRepository.update({
+        
+        // Update ticket
+        const ticket: Ticket = await this.ticketsRepository.update({
             where: {
                 id: Number(id)
             },
@@ -69,7 +86,19 @@ export class TicketsService {
                         id: updateTicketDto.laneId
                     }
                 }
+            },
+            include: {
+                assignee: {
+                    select: {
+                        username: true
+                    }
+                }
             }
         })
+
+        // Emit event
+        this.eventsGateway.emitTicketUpdated(ticket)
+
+        return ticket
     }
 }
