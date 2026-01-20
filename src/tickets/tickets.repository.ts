@@ -20,4 +20,11 @@ export class TicketsRepository {
     ): Promise<Ticket[]> {
         return await this.prisma.ticket.findMany(args)
     }
+
+    public async update(
+        args: Prisma.TicketUpdateArgs
+    ): Promise<Ticket> {
+
+        return await this.prisma.ticket.update(args)
+    }
 }
