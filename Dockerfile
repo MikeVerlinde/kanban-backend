@@ -53,7 +53,7 @@ COPY --from=builder /api/prisma ./prisma
 COPY package.json .
 
 # Expose port - which port the (service in the) container listens to
-EXPOSE 3000
+EXPOSE 4000
 
 # Start server
-CMD ["npm", "run", "start"] 
+CMD ["npm", "run", "start:prod"] 
