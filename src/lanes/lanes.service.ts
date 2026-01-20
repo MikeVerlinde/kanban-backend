@@ -18,7 +18,7 @@ export class LanesService {
         const existingLanes: Lane[] = await this.get({})
         
         // Create lane
-        return this.lanesRepository.create({
+        return await this.lanesRepository.create({
             data: {
                 name: createLaneDto.name,
                 position: existingLanes.length,
@@ -30,6 +30,6 @@ export class LanesService {
     public async get (
         filter: {}
     ): Promise<Lane[]> {
-        return this.lanesRepository.get(filter)
+        return await this.lanesRepository.get(filter)
     }
 }
