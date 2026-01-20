@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards, UsePipes } from "@nestjs/common";
+import { Body, Controller, Get, Post, UseGuards, UsePipes } from "@nestjs/common";
 import { LanesService } from "./lanes.service.js";
 import { ZodValidationPipe } from "../common/pipes/zod.pipe.js";
 import { type CreateLaneDto, createLaneSchema } from "./dto/createLane.dto.js";
@@ -23,6 +23,16 @@ export class LanesController {
         
         return {
             lane
+        }
+    }
+
+    @Get()
+    @UseGuards(AuthGuard)
+    public async get () {
+
+        const lanes: Lane[] = await this.lanesService.get({})
+        return {
+            lanes
         }
     }
 }
