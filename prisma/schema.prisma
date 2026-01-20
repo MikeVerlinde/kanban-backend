@@ -12,3 +12,10 @@ model User {
   username    String    @unique
   password    String
 }
+
+model Lane {
+  id          Int       @id @default(autoincrement())
+  name        String
+  position    Int       @unique
+  createdAt   DateTime
+}
