@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { TicketsRepository } from "./tickets.repository.js";
 import { CreateTicketDto } from "./dto/createTicket.dto.js";
 import { Ticket } from "../generated/prisma/client.js";
+import { UpdateTicketDto } from "./dto/updateTicket.dto.js";
 
 @Injectable()
 export class TicketsService {
@@ -43,5 +44,23 @@ export class TicketsService {
         filter: {}
     ): Promise<Ticket[]> {
         return await this.ticketsRepository.get(filter)
+    }
+
+    public async update (
+        id: string,
+        updateTicketDto: UpdateTicketDto
+    ): Promise<Ticket> {
+        return await this.ticketsRepository.update({
+            where: {
+                id: Number(id)
+            },
+            data: {
+                lane: {
+                    connect: {
+                        id: updateTicketDto.laneId
+                    }
+                }
+            }
+        })
     }
 }
