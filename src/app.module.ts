@@ -7,6 +7,6 @@ import { LanesModule } from "./lanes/lanes.module.js";
 import { TicketsModule } from "./tickets/tickets.module.js";
 
 @Module({
-    imports: [PrismaModule, UsersModule, AuthModule, TicketsModule, LanesModule, ConfigModule.forRoot()]
+    imports: [ConfigModule.forRoot(), PrismaModule, UsersModule, AuthModule, TicketsModule, LanesModule]
 })
 export class AppModule {}

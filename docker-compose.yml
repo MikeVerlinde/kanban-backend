@@ -18,5 +18,22 @@ services:
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_unicode_ci
 
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kanban-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_started
+    env_file:
+      - .env.example
+    environment:
+      DATABASE_URL: mysql://kanban_user:kanban_password@db:3306/kanban
+      DATABASE_HOST: db
+    ports:
+      - "4000:4000"
+
 volumes:
   db_data:
