@@ -31,7 +31,7 @@ Start eerst de backend, daarna de frontend, beide volgens onderstaande instructi
 - Open sh in de docker container:
 ```docker exec -it kanban-api sh```
 
-- Push de database structuur van Prisma schema naar de database (in dit geval nodig omdat de kanban_user geen permissie heeft om de shadow DB aan te maken. in production gebruik je normaliter Prisma migrations in the CI/CD). 
+- Push de database structuur van Prisma schema naar de database (in dit geval nodig omdat de kanban_user geen permissie heeft om de shadow DB aan te maken. In production gebruik je normaliter Prisma migrations in the CI/CD). 
 ```npx prisma db push```
 
 - Run de seed:
@@ -42,6 +42,9 @@ De API en database staan nu klaar.
 ### Frontend
 Clone de frontend repository:
 ```git clone [https/ssh url]```
+
+Installeer de dependencies:
+```npm i```
 
 Build de frontend:
 ```npm run build```
@@ -55,5 +58,14 @@ De frontend staat nu klaar.
 - Ga naar de browser en open `http://localhost:3000`
 - Login met de gebruikersnaam `Mike` en het wachtwoord `Mike123!`
 
-### Disclaimer
-Gebruik deze repository niet in productie. Het is een proof-of-concept, die wegens restricties in tijd, niet alle best practices toepast die noodzakelijk zijn voor productie.
+### Disclaimer en overwegingen
+Gebruik deze repository niet in productie. Het is een proof-of-concept, die wegens restricties in tijd en scope, niet alle best practices toepast die noodzakelijk zijn voor productie. Hieronder een aantal overwegingen:
+
+#### Authenticatie en authorizatie
+De app maakt gebruik van een eenvoudige password-based authenticatie implementatie. De wachtwoorden worden gehashed en geverifieerd met behulp van Argon2id. In productie wordt Knowledge Based Auhtentication (KBA), waaronder wachtwoorden vallen, afgeraden door de NIST. In plaats daarvan dient men te gaan voor Evidence Based Authentication (EBA), zoals biometrics of een One-Time Password gegenereerd door een fysiek apparaat, in combinatie met maatregelen zoals rate limiting, of voor protocollen als OAuth 2.0. De app maakt gebruik van JWT tokens opgeslagen in een cookie wat, in tegenstelling tot session-based, stateless is. 
+
+#### Database
+De applicatie maakt gebruik van de MySQL database, gerunt in een Docker container met volume. Dit biedt een snelle en overdraagbare opzet voor een demo als deze, maar wordt niet aangeraden in productie, gezien Docker containers niet zijn ontworpen voor data persistency en reliability over lange periodes van tijd. Tevens wordt voor grote hoeveelheden data in productie aangeraden om, waar van toepassing, indexes te gebruiken.
+
+#### Frontend
+De app gebruikt, zoals aangeraden door de nieuwere versies van React en Nextjs, een combinatie van server- en client-components. Voor het automatisch redirecten van niet-ingelogde gebruikers wordt de Nextjs proxy gebruikt. Voor productie applicaties worden on andere de volgende technieken aangeraden: cached components voor snellere laadtijden, suspense boundaries voor fallbacks tijdens het laden, error boundaries voor fallbacks in het geval van een error, uitgebreidere error handling van de fetches (niet door errors the throwen, maar door info te returnen), etc.
